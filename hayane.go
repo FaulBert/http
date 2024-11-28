@@ -1,40 +1,38 @@
 package hayane
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/nazhard/chiyo"
+)
 
 type Haya struct {
-	Router *Router
+	router *chiyo.Router
 }
 
-type Middleware interface {
-	Handle(next http.Handler) http.Handler
-}
-
-func Create() *Haya {
-	return &Haya{
-		Router: &Router{},
-	}
-}
-
-func (h *Haya) Add(middleware interface{}) {
-	switch mw := middleware.(type) {
-	case func(http.Handler) http.Handler:
-		h.Router.AddMiddleware(mw)
-	case Middleware:
-		h.Router.AddMiddleware(mw.Handle)
-	default:
-		panic("kyaa!! Unsupported middleware type!")
-	}
+func New() *Haya {
+	r := chiyo.NewRouter()
+	return &Haya{router: r}
 }
 
 func (h *Haya) GET(path string, handler func(*Context)) {
-	h.Router.AddRoute("GET", path, handler)
+	h.router.AddRoute("GET", path, func(w http.ResponseWriter, req *http.Request) {
+		c := &Context{Writer: w, Request: req}
+		handler(c)
+	})
 }
 
-func (h *Haya) POST(path string, handler func(*Context)) {
-	h.Router.AddRoute("POST", path, handler)
+func (h *Haya) POST(path string, handler func(c *Context)) {
+	h.router.AddRoute("POST", path, func(w http.ResponseWriter, req *http.Request) {
+		c := &Context{Writer: w, Request: req}
+		handler(c)
+	})
 }
 
-func (h *Haya) Run(addr string) {
-	http.ListenAndServe(addr, h.Router)
+func (h *Haya) Use(middleware func(http.HandlerFunc) http.HandlerFunc) {
+	h.router.Use(middleware)
+}
+
+func (h *Haya) Start(address string) error {
+	return http.ListenAndServe(address, h.router)
 }
