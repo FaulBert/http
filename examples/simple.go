@@ -1,16 +1,25 @@
 package main
 
-import "github.com/nazhard/http"
+import (
+	"github.com/nazhard/hayane"
+	//"github.com/nazhard/hayane/middleware"
+)
 
 func main() {
-	r := http.New()
+	app := hayane.Create()
 
-	r.GET("/", func(ctx http.Context) error {
-		return ctx.String("hello")
-	})
-	r.GET("/nazhard", func(ctx http.Context) error {
-		return ctx.String("his link: https://github.com/nazhard")
+	//app.Add(middleware.Logging)
+
+	app.GET("/", func(ctx *hayane.Context) {
+		ctx.String("Hello Mina-san!")
 	})
 
-	r.Serve(":8080")
+	app.GET("/nazhard", func(ctx *hayane.Context) {
+		ctx.JSON(map[string]string{
+			"name":   "nazhard",
+			"github": "https://github.com/nazhard",
+		})
+	})
+
+	app.Run(":8080")
 }

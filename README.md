@@ -1,1 +1,7 @@
-Just parody. Go's stdlib is still the best!
+<center>
+
+## Hayane
+
+Fast and Minimal WebFramework
+
+</center>
