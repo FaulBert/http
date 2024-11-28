@@ -1,7 +1,11 @@
-<center>
+<div align="center">
 
 ## Hayane
 
-Fast and Minimal WebFramework
+###### Fast and Minimal Web Framework
 
-</center>
+</div>
+
+---
+
+Hayane, minimal web framework for mini project. Based on standard `net/http` library.
