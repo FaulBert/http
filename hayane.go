@@ -16,14 +16,28 @@ func New() *Haya {
 }
 
 func (h *Haya) GET(path string, handler func(*Context)) {
-	h.router.AddRoute("GET", path, func(w http.ResponseWriter, req *http.Request) {
+	h.router.AddRoute(http.MethodGet, path, func(w http.ResponseWriter, req *http.Request) {
 		c := &Context{Writer: w, Request: req}
 		handler(c)
 	})
 }
 
 func (h *Haya) POST(path string, handler func(c *Context)) {
-	h.router.AddRoute("POST", path, func(w http.ResponseWriter, req *http.Request) {
+	h.router.AddRoute(http.MethodPost, path, func(w http.ResponseWriter, req *http.Request) {
+		c := &Context{Writer: w, Request: req}
+		handler(c)
+	})
+}
+
+func (h *Haya) PUT(path string, handler func(*Context)) {
+	h.router.AddRoute(http.MethodPut, path, func(w http.ResponseWriter, req *http.Request) {
+		c := &Context{Writer: w, Request: req}
+		handler(c)
+	})
+}
+
+func (h *Haya) DELETE(path string, handler func(*Context)) {
+	h.router.AddRoute(http.MethodDelete, path, func(w http.ResponseWriter, req *http.Request) {
 		c := &Context{Writer: w, Request: req}
 		handler(c)
 	})
